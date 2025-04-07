@@ -1,5 +1,7 @@
 ﻿using Tutorial3.Models;
 
+namespace Tutorial3Tests;
+
 public class EmpDeptSalgradeTests
 {
     // 1. Simple WHERE filter
@@ -58,11 +60,11 @@ public class EmpDeptSalgradeTests
 
         var result = emps.Select(e => new {e.EName, e.Sal}); 
         
-         Assert.All(result, r =>
-         {
-             Assert.False(string.IsNullOrWhiteSpace(r.EName));
-             Assert.True(r.Sal > 0);
-         });
+        Assert.All(result, r =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(r.EName));
+            Assert.True(r.Sal > 0);
+        });
     }
 
     // 5. JOIN Emp to Dept
