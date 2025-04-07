@@ -9,7 +9,9 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-        List<Emp> result = emps.Where(e => e.Job == "SALESMAN").ToList(); 
+        List<Emp> result = emps
+            .Where(e => e.Job == "SALESMAN")
+            .ToList(); 
 
         Assert.Equal(2, result.Count);
         Assert.All(result, e => Assert.Equal("SALESMAN", e.Job));
@@ -22,7 +24,9 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-        List<Emp> result = emps.Where(e => e.DeptNo == 30).OrderByDescending(e => e.Sal).ToList(); 
+        List<Emp> result = emps
+            .Where(e => e.DeptNo == 30)
+            .OrderByDescending(e => e.Sal).ToList(); 
 
         Assert.Equal(2, result.Count);
         Assert.True(result[0].Sal >= result[1].Sal);
@@ -37,7 +41,7 @@ public class EmpDeptSalgradeTests
         var depts = Database.GetDepts();
 
         List<Emp> result = emps
-            .Join(depts, e => e.DeptNo, d => d.DeptNo, (e, d) => new {Emp = e, Dept = d})
+            .Join(depts, e => e.DeptNo, d => d.DeptNo, (emp, dept) => new {Emp = emp, Dept = dept})
             .Where(joined => joined.Dept.Loc == "CHICAGO")
             .Select(joined => joined.Emp)
             .ToList(); 
@@ -70,7 +74,7 @@ public class EmpDeptSalgradeTests
         var depts = Database.GetDepts();
 
         var result = emps
-            .Join(depts, e => e.DeptNo, d => d.DeptNo, (e, d) => new {Emp = e, Dept = d})
+            .Join(depts, e => e.DeptNo, d => d.DeptNo, (emp, dept) => new {Emp = emp, Dept = dept})
             .Select(joined => new {joined.Emp.EName, joined.Dept.DName}); 
 
         Assert.Contains(result, r => r.DName == "SALES" && r.EName == "ALLEN");
@@ -97,7 +101,9 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-        var result = emps.Where(e => e.Comm.HasValue).Select(e => new {e.EName, e.Comm}); 
+        var result = emps
+            .Where(e => e.Comm.HasValue)
+            .Select(e => new {e.EName, e.Comm}); 
         
         Assert.All(result, r => Assert.NotNull(r.Comm));
     }
@@ -112,7 +118,8 @@ public class EmpDeptSalgradeTests
 
         var result = emps
             .Join(grades, _ => true, _ => true, (e, s) => new {e.EName, e.Sal, s.Grade, s.Losal, s.Hisal})
-            .Where(joined => joined.Sal >= joined.Losal && joined.Sal <= joined.Hisal);
+            .Where(joined => joined.Sal >= joined.Losal && joined.Sal <= joined.Hisal)
+            .Select(joined => new {joined.EName, joined.Grade});
         
         Assert.Contains(result, r => r.EName == "ALLEN" && r.Grade == 3);
     }
